@@ -1,16 +1,21 @@
-import { View, Text, Button } from "react-native"
+import { View, Button } from "react-native"
+import { startPayment } from "../services/payment"
 
 export default function CheckoutScreen() {
   const handlePay = async () => {
-    await fetch("http://YOUR-IP:5000/api/payments/pay", {
-      method: "POST"
+    const orderRes = await fetch("http://YOUR-IP:5000/api/orders", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ items: [] })
     })
-    alert("Payment simulated")
+
+    const order = await orderRes.json()
+
+    await startPayment("test@email.com", 100, order.id)
   }
 
   return (
     <View>
-      <Text>Checkout</Text>
       <Button title="Pay Now" onPress={handlePay} />
     </View>
   )
